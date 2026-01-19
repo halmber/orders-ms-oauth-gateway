@@ -34,9 +34,19 @@ spring:
   liquibase:
     enabled: true
 
+  kafka:
+    bootstrap-servers: ${KAFKA_ADDRESS}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
 springdoc:
   swagger-ui:
     path: /swagger-ui
     enabled: true
   api-docs:
     enabled: true
+
+kafka:
+  topics:
+    emailSend: emailSend

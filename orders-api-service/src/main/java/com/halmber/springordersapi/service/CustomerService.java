@@ -37,6 +37,7 @@ import java.util.UUID;
 public class CustomerService extends BaseService<Customer, UUID> {
     private final CustomerRepository repository;
     private final CustomerMapper mapper;
+    private final EmailMessageProducerService emailMessageProducerService;
 
     @Override
     protected BaseRepository<Customer, UUID> getRepository() {
@@ -66,7 +67,41 @@ public class CustomerService extends BaseService<Customer, UUID> {
             throw new AlreadyExistsException(Customer.class.getSimpleName(), "email", entity.getEmail());
         }
 
-        return mapper.toResponse(repository.save(entity));
+        Customer savedCustomer = repository.save(entity);
+
+        // Send email notification with generated ID based on customer ID
+        String emailId = "customer-welcome-" + savedCustomer.getId();
+        String subject = "Welcome to Orders API!";
+        String content = String.format(
+            """
+            Hello %s %s,
+            
+            Welcome to our Orders API platform!
+            Your account has been successfully created.
+            
+            Account Details:
+            Name: %s %s
+            Email: %s
+            City: %s
+            
+            Best regards,
+            Halmber""",
+            savedCustomer.getFirstName(),
+            savedCustomer.getLastName(),
+            savedCustomer.getFirstName(),
+            savedCustomer.getLastName(),
+            savedCustomer.getEmail(),
+            savedCustomer.getCity()
+        );
+
+        emailMessageProducerService.sendEmailNotification(
+                emailId,
+                savedCustomer.getEmail(),
+                subject,
+                content
+        );
+
+        return mapper.toResponse(savedCustomer);
     }
 
     @Transactional

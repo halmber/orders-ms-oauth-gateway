@@ -40,6 +40,7 @@ public class OrderService extends BaseService<Order, UUID> {
     private final OrderRepository repository;
     private final CustomerService customerService;
     private final OrderMapper mapper;
+    private final EmailMessageProducerService emailMessageProducerService;
 
     @Override
     protected BaseRepository<Order, UUID> getRepository() {
@@ -69,7 +70,45 @@ public class OrderService extends BaseService<Order, UUID> {
         Order entity = mapper.toEntity(dto);
         entity.setCustomer(customer);
 
-        return mapper.toResponse(repository.saveAndFlush(entity));
+        Order savedOrder = repository.saveAndFlush(entity);
+
+        // Send email notification with generated ID based on order ID
+        String emailId = "order-confirmation-" + savedOrder.getId();
+        String subject = "Order Confirmation - Order #" + savedOrder.getId();
+        String content = String.format(
+            """
+            Dear %s %s,
+            
+            Your order has been successfully created!
+            
+            Order Details:
+            Order ID: %s
+            Amount: %.2f
+            Status: %s
+            Payment Method: %s
+            Created At: %s
+            
+            Thank you for your order!
+            
+            Best regards,
+            Orders API Team""",
+            customer.getFirstName(),
+            customer.getLastName(),
+            savedOrder.getId(),
+            savedOrder.getAmount(),
+            savedOrder.getStatus(),
+            savedOrder.getPaymentMethod(),
+            savedOrder.getCreatedAt()
+        );
+
+        emailMessageProducerService.sendEmailNotification(
+            emailId,
+            customer.getEmail(),
+            subject,
+            content
+        );
+
+        return mapper.toResponse(savedOrder);
     }
 
     @Transactional
