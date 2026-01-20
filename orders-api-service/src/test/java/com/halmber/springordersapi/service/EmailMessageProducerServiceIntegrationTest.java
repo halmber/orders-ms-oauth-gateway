@@ -1,47 +1,24 @@
 package com.halmber.springordersapi.service;
 
+import com.halmber.springordersapi.AbstractKafkaIntegrationTest;
+import com.halmber.springordersapi.KafkaTestHelper;
 import com.halmber.springordersapi.model.dto.messaging.EmailMessageDto;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
-import org.springframework.kafka.listener.MessageListener;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.kafka.test.context.EmbeddedKafka;
-import org.springframework.kafka.test.utils.ContainerTestUtils;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ActiveProfiles("test")
-@EmbeddedKafka(
-        partitions = 1,
-        topics = {"emailSend"},
-        brokerProperties = {
-                "listeners=PLAINTEXT://localhost:9092",
-                "port=9092"
-        }
-)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @DisplayName("EmailMessageProducerService Integration Tests")
-class EmailMessageProducerServiceIntegrationTest {
+class EmailMessageProducerServiceIntegrationTest extends AbstractKafkaIntegrationTest {
 
     @Autowired
     private EmailMessageProducerService producerService;
@@ -54,26 +31,8 @@ class EmailMessageProducerServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        records = new LinkedBlockingQueue<>();
-
-        Map<String, Object> consumerProps = new HashMap<>();
-        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, "test-group");
-        consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        consumerProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        consumerProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, EmailMessageDto.class.getName());
-
-        DefaultKafkaConsumerFactory<String, EmailMessageDto> consumerFactory =
-                new DefaultKafkaConsumerFactory<>(consumerProps);
-
-        ContainerProperties containerProperties = new ContainerProperties(emailSendTopic);
-        container = new KafkaMessageListenerContainer<>(consumerFactory, containerProperties);
-        container.setupMessageListener((MessageListener<String, EmailMessageDto>) records::add);
-        container.start();
-
-        ContainerTestUtils.waitForAssignment(container, 2);
+        records = KafkaTestHelper.createRecordsQueue();
+        container = KafkaTestHelper.createEmailConsumer("test-customer-group", records);
     }
 
     @AfterEach

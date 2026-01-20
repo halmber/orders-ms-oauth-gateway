@@ -3,10 +3,10 @@ package com.halmber.emailsenderservice.listener;
 import com.halmber.emailsenderservice.model.dto.EmailMessageDto;
 import com.halmber.emailsenderservice.model.entity.EmailMessage;
 import com.halmber.emailsenderservice.repository.EmailMessageRepository;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -36,13 +36,9 @@ import static org.mockito.Mockito.reset;
 @ActiveProfiles("test")
 @EmbeddedKafka(
         partitions = 1,
-        topics = {"emailSend"},
-        brokerProperties = {
-                "listeners=PLAINTEXT://localhost:9093",
-                "port=9093"
-        }
+        topics = {"emailSend"}
 )
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @DisplayName("EmailSendMessageListener Integration Tests")
 class EmailSendMessageListenerIntegrationTest {
 
@@ -58,7 +54,9 @@ class EmailSendMessageListenerIntegrationTest {
     static void setProperties(DynamicPropertyRegistry registry) {
         registry.add("elasticsearch.address",
                 () -> elasticsearchContainer.getHttpHostAddress());
-        registry.add("spring.kafka.bootstrap-servers", () -> "localhost:9093");
+        registry.add("spring.kafka.bootstrap-servers",
+                () -> System.getProperty("spring.embedded.kafka.brokers")
+        );
         registry.add("scheduling.enabled", () -> "false");
     }
 
@@ -71,9 +69,13 @@ class EmailSendMessageListenerIntegrationTest {
     @MockitoBean
     private JavaMailSender mailSender;
 
+    @BeforeAll
+    static void beforeAll(@Autowired EmailMessageRepository repo) {
+        repo.deleteAll();
+    }
+
     @BeforeEach
     void setUp() {
-        emailMessageRepository.deleteAll();
         reset(mailSender);
         doNothing().when(mailSender).send(any(SimpleMailMessage.class));
     }

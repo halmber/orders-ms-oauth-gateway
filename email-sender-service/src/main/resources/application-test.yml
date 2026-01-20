@@ -2,6 +2,10 @@ spring:
   application:
     name: email-sender-service-test
 
+  elasticsearch:
+    connection-timeout: 5s
+    socket-timeout: 30s
+
   kafka:
     bootstrap-servers: localhost:9093
     consumer:
