@@ -8,6 +8,7 @@
     <modules>
         <module>orders-api-service</module>
         <module>email-sender-service</module>
+        <module>orders-api-gateway</module>
     </modules>
 
     <groupId>com.halmber</groupId>

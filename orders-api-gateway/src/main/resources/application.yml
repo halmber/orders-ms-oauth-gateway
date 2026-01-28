@@ -1,0 +1,9 @@
+server:
+  port: 1000
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: orders-api-gateway
