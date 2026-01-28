@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.halmber</groupId>
-    <artifactId>spring-orders-api</artifactId>
+    <artifactId>orders-api-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-orders-api</name>
-    <description>spring-orders-api</description>
+    <name>orders-api-service</name>
+    <description>orders-api-service</description>
     <properties>
         <java.version>21</java.version>
     </properties>

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: spring-orders-api
+    name: orders-api-service
 
   datasource:
     url: jdbc:postgresql://localhost:5433/orders
