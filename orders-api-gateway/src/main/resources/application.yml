@@ -7,3 +7,44 @@ server:
 spring:
   application:
     name: orders-api-gateway
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      username: ${REDIS_USERNAME:}
+      password: ${REDIS_PASSWORD:}
+      ssl:
+        enabled: ${REDIS_SSL:false}
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        health-check-path: /health
+    gateway:
+      routes:
+        - id: gateway-oauth-route
+          uri: lb://gateway
+          predicates:
+            - Path=/oauth/**
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      services:
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 60
+        slow-call-duration-threshold:
+          - 2s
+        minimum-number-of-calls: 3
+        permitted-number-of-calls-in-half-open-state: 1
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: "*"
