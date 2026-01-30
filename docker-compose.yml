@@ -1,5 +1,29 @@
 version: "3.9"
 services:
+  consul:
+    image: hashicorp/consul:1.20
+    container_name: consul
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    command: agent -server -ui -bootstrap-expect=1 -client=0.0.0.0
+    healthcheck:
+      test: [ "CMD", "consul", "members" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   elasticsearch:
     container_name: elasticsearch
     image: elasticsearch:8.6.1
@@ -68,11 +92,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
-#    healthcheck:
-#      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-#      interval: 5s
-#      timeout: 5s
-#      retries: 10
 
   orders-api:
     container_name: orders-api-service
@@ -83,13 +102,20 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
-      - kafka
+      postgres:
+        condition: service_started
+      kafka:
+        condition: service_started
+      consul:
+        condition: service_healthy
     environment:
       KAFKA_ADDRESS: kafka:9092
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/orders
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: root
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED: "true"
 
   email-sender:
     container_name: email-sender-service
@@ -106,6 +132,8 @@ services:
         condition: service_healthy
       kafka:
         condition: service_started
+      consul:
+        condition: service_healthy
     environment:
       ES_ADDRESS: elasticsearch:9200
       KAFKA_ADDRESS: kafka:9092
@@ -113,6 +141,40 @@ services:
       MAIL_PORT: ${MAIL_PORT}
       MAIL_USERNAME: ${MAIL_USERNAME}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED: "true"
+
+  gateway:
+    container_name: orders-api-gateway
+    build:
+      context: ./orders-api-gateway
+      dockerfile: Dockerfile
+    env_file:
+      - ./.env
+    restart: on-failure
+    ports:
+      - "1000:1000"
+    depends_on:
+      consul:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      orders-api:
+        condition: service_started
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_USERNAME: ${REDIS_USERNAME:-}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      REDIS_SSL: "false"
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED: "true"
+      OAUTH_GOOGLE_CLIENT_ID: ${OAUTH_GOOGLE_CLIENT_ID}
+      OAUTH_GOOGLE_CLIENT_SECRET: ${OAUTH_GOOGLE_CLIENT_SECRET}
+      OAUTH_GOOGLE_SCOPE: ${OAUTH_GOOGLE_SCOPE:-openid email profile}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
 
 volumes:
   postgres_data:

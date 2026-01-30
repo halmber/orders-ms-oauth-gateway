@@ -15,18 +15,38 @@ spring:
       password: ${REDIS_PASSWORD:}
       ssl:
         enabled: ${REDIS_SSL:false}
+  config:
+    import: optional:consul:/
   cloud:
     consul:
-      host: localhost
-      port: 8500
+      host: ${SPRING_CLOUD_CONSUL_HOST:localhost}
+      port: ${SPRING_CLOUD_CONSUL_PORT:8500}
       discovery:
-        health-check-path: /health
+        enabled: ${SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED:true}
+        instance-id: ${spring.application.name}:${random.value}
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        prefer-ip-address: true
+        hostname: ${HOSTNAME:localhost}
+        service-name: ${spring.application.name}
     gateway:
-      routes:
-        - id: gateway-oauth-route
-          uri: lb://gateway
-          predicates:
-            - Path=/oauth/**
+      server:
+        webflux:
+          routes:
+            - id: gateway-oauth-route
+              uri: lb://gateway
+              predicates:
+                - Path=/oauth/**
+            - id: orders-api-route
+              uri: lb://orders-api-service
+              predicates:
+                - Path=/api/**
+              filters:
+                - RewritePath=/api/(?<remaining>.*), /api/${remaining}
+                - name: CircuitBreaker
+                  args:
+                    name: services
+                    fallbackUri: forward:/fallback
 
 resilience4j:
   circuitbreaker:
@@ -45,6 +65,18 @@ management:
       show-details: always
   endpoints:
     web:
-      base-path: /
+      base-path: /actuator
       exposure:
-        include: "*"
+        include: health,info
+
+oauth:
+  google:
+    clientId: ${OAUTH_GOOGLE_CLIENT_ID}
+    clientSecret: ${OAUTH_GOOGLE_CLIENT_SECRET}
+    scope: ${OAUTH_GOOGLE_SCOPE:openid email profile}
+
+logging:
+  level:
+    com.halmber.ordersapigateway: INFO
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.consul: DEBUG

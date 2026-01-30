@@ -33,6 +33,34 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
+  config:
+    import: optional:consul:/
+  cloud:
+    consul:
+      host: ${SPRING_CLOUD_CONSUL_HOST:localhost}
+      port: ${SPRING_CLOUD_CONSUL_PORT:8500}
+      discovery:
+        enabled: ${SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED:true}
+        instance-id: ${spring.application.name}:${random.value}
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        prefer-ip-address: true
+        hostname: ${HOSTNAME:localhost}
+        service-name: ${spring.application.name}
+
+management:
+  health:
+    elasticsearch:
+      enabled: false
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info
+
 kafka:
   topics:
     emailSend: emailSend
