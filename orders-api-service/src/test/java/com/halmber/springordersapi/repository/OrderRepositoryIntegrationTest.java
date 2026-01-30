@@ -1,5 +1,6 @@
 package com.halmber.springordersapi.repository;
 
+import com.halmber.springordersapi.BaseConfigurationTest;
 import com.halmber.springordersapi.model.entity.Customer;
 import com.halmber.springordersapi.model.entity.Order;
 import com.halmber.springordersapi.model.enums.PaymentEnum;
@@ -13,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,9 +21,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ActiveProfiles("test")
 @DisplayName("OrderRepository Integration Tests")
-class OrderRepositoryIntegrationTest {
+class OrderRepositoryIntegrationTest extends BaseConfigurationTest {
 
     @Autowired
     private TestEntityManager entityManager;

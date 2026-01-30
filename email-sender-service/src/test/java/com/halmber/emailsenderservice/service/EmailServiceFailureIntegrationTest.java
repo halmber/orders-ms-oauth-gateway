@@ -1,5 +1,6 @@
 package com.halmber.emailsenderservice.service;
 
+import com.halmber.emailsenderservice.BaseConfigurationTest;
 import com.halmber.emailsenderservice.model.dto.EmailMessageDto;
 import com.halmber.emailsenderservice.model.entity.EmailMessage;
 import com.halmber.emailsenderservice.repository.EmailMessageRepository;
@@ -11,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -30,9 +30,8 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @Testcontainers
-@ActiveProfiles("test")
 @DisplayName("EmailService Failure Integration Tests")
-class EmailServiceFailureIntegrationTest {
+class EmailServiceFailureIntegrationTest extends BaseConfigurationTest {
 
     @Container
     static ElasticsearchContainer elasticsearchContainer = new ElasticsearchContainer(

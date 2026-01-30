@@ -1,6 +1,7 @@
 package com.halmber.springordersapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.halmber.springordersapi.BaseConfigurationTest;
 import com.halmber.springordersapi.model.dto.request.customer.CustomerCreateDto;
 import com.halmber.springordersapi.model.dto.request.customer.CustomerEditDto;
 import com.halmber.springordersapi.model.dto.response.customer.CustomerListResponseDto;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -30,9 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CustomerController.class)
-@ActiveProfiles("test")
-@DisplayName("CustomerController Integration Tests")
-class CustomerControllerUnitTest {
+@DisplayName("CustomerController Unit Tests")
+class CustomerControllerUnitTest extends BaseConfigurationTest {
 
     @Autowired
     private MockMvc mockMvc;

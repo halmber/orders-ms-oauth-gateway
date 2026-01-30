@@ -1,16 +1,15 @@
 package com.halmber.springordersapi.service;
 
+import com.halmber.springordersapi.BaseConfigurationTest;
 import com.halmber.springordersapi.model.dto.response.order.OrderImportResultDto;
 import com.halmber.springordersapi.model.entity.Customer;
 import com.halmber.springordersapi.repository.CustomerRepository;
 import com.halmber.springordersapi.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +19,9 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(
-    properties = {
-        "spring.kafka.admin.enabled=false",
-        "spring.kafka.bootstrap-servers=disabled:9092"
-    }
-)
-@ActiveProfiles("test")
+@SpringBootTest
 @Transactional
-class OrderImportServiceIntegrationTest {
+class OrderImportServiceIntegrationTest extends BaseConfigurationTest {
 
     @Autowired
     private OrderImportService importService;

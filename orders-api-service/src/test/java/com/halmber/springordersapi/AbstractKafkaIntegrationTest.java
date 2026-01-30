@@ -5,7 +5,14 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(
+        properties = {
+                "spring.cloud.consul.enabled=false",
+                "spring.cloud.consul.config.enabled=false",
+                "spring.cloud.consul.discovery.enabled=false",
+                "spring.cloud.discovery.enabled=false"
+        }
+)
 @ActiveProfiles("test")
 @EmbeddedKafka(
         partitions = 1,

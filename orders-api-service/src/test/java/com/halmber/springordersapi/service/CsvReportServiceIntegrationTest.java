@@ -1,5 +1,6 @@
 package com.halmber.springordersapi.service;
 
+import com.halmber.springordersapi.BaseConfigurationTest;
 import com.halmber.springordersapi.model.entity.Customer;
 import com.halmber.springordersapi.model.entity.Order;
 import com.halmber.springordersapi.model.enums.PaymentEnum;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.StringWriter;
@@ -19,14 +19,8 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(
-        properties = {
-                "spring.kafka.admin.enabled=false",
-                "spring.kafka.bootstrap-servers=disabled:9092"
-        }
-)
-@ActiveProfiles("test")
-class CsvReportServiceIntegrationTest {
+@SpringBootTest
+class CsvReportServiceIntegrationTest extends BaseConfigurationTest {
 
     @Autowired
     private CsvReportService csvReportService;

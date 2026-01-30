@@ -1,6 +1,7 @@
 package com.halmber.springordersapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.halmber.springordersapi.BaseConfigurationTest;
 import com.halmber.springordersapi.model.dto.request.order.OrderCreateDto;
 import com.halmber.springordersapi.model.dto.request.order.OrderEditDto;
 import com.halmber.springordersapi.model.dto.request.order.OrderFilterDto;
@@ -21,10 +22,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -32,15 +31,9 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(
-    properties = {
-        "spring.kafka.admin.enabled=false",
-        "spring.kafka.bootstrap-servers=disabled:9092"
-    }
-)
+@SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
-class OrderControllerIntegrationTest {
+class OrderControllerIntegrationTest extends BaseConfigurationTest {
 
     @Autowired
     private MockMvc mockMvc;

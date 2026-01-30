@@ -1,6 +1,7 @@
 package com.halmber.springordersapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.halmber.springordersapi.BaseConfigurationTest;
 import com.halmber.springordersapi.model.OrderReportFilter;
 import com.halmber.springordersapi.model.dto.request.order.OrderCreateDto;
 import com.halmber.springordersapi.model.dto.request.order.OrderEditDto;
@@ -21,7 +22,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -38,9 +38,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(OrderController.class)
-@ActiveProfiles("test")
 @DisplayName("OrderController Integration Tests")
-class OrderControllerTest {
+class OrderControllerTest extends BaseConfigurationTest {
 
     @Autowired
     private MockMvc mockMvc;

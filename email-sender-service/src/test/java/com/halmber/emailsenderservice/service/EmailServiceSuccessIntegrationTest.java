@@ -1,5 +1,6 @@
 package com.halmber.emailsenderservice.service;
 
+import com.halmber.emailsenderservice.BaseConfigurationTest;
 import com.halmber.emailsenderservice.model.dto.EmailMessageDto;
 import com.halmber.emailsenderservice.model.entity.EmailMessage;
 import com.halmber.emailsenderservice.repository.EmailMessageRepository;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -30,9 +30,8 @@ import static org.mockito.Mockito.*;
         "spring.kafka.listener.auto-startup=false"
 })
 @Testcontainers
-@ActiveProfiles("test")
 @DisplayName("EmailService Success Integration Tests")
-class EmailServiceSuccessIntegrationTest {
+class EmailServiceSuccessIntegrationTest extends BaseConfigurationTest {
 
     @Container
     static ElasticsearchContainer elasticsearchContainer = new ElasticsearchContainer(

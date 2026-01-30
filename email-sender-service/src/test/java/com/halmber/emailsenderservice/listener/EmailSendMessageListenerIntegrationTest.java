@@ -1,5 +1,6 @@
 package com.halmber.emailsenderservice.listener;
 
+import com.halmber.emailsenderservice.BaseConfigurationTest;
 import com.halmber.emailsenderservice.model.dto.EmailMessageDto;
 import com.halmber.emailsenderservice.model.entity.EmailMessage;
 import com.halmber.emailsenderservice.repository.EmailMessageRepository;
@@ -33,14 +34,13 @@ import static org.mockito.Mockito.reset;
 
 @SpringBootTest
 @Testcontainers
-@ActiveProfiles("test")
 @EmbeddedKafka(
         partitions = 1,
         topics = {"emailSend"}
 )
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @DisplayName("EmailSendMessageListener Integration Tests")
-class EmailSendMessageListenerIntegrationTest {
+class EmailSendMessageListenerIntegrationTest extends BaseConfigurationTest {
 
     @Container
     static ElasticsearchContainer elasticsearchContainer = new ElasticsearchContainer(
