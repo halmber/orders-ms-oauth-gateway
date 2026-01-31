@@ -37,16 +37,27 @@ spring:
               uri: lb://gateway
               predicates:
                 - Path=/oauth/**
+              order: 1
+            - id: email-sender-route
+              uri: lb://email-sender-service
+              predicates:
+                - Path=/api/emails/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: services
+                    fallbackUri: forward:/fallback
+              order: 2
             - id: orders-api-route
               uri: lb://orders-api-service
               predicates:
                 - Path=/api/**
               filters:
-                - RewritePath=/api/(?<remaining>.*), /api/${remaining}
                 - name: CircuitBreaker
                   args:
                     name: services
                     fallbackUri: forward:/fallback
+              order: 3
 
 resilience4j:
   circuitbreaker:
