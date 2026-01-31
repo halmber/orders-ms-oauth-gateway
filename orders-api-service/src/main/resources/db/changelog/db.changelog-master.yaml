@@ -7,3 +7,5 @@ databaseChangeLog:
       file: db/changelog/changeset/2025-12-02-create-customers-records.xml
   - include:
       file: db/changelog/changeset/2025-12-02-add-indexes.xml
+  - include:
+      file: db/changelog/changeset/2026-01-31-create-orders-records.xml

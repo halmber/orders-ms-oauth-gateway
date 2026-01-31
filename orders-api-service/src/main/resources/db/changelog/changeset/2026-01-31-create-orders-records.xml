@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="2026-01-31-create-orders-records" author="halmber">
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="67da6e0e-6e6b-4774-851d-35093e56c26f"/>
+            <column name="amount" value="125.5"/>
+            <column name="status" value="NEW"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="29567719-d315-497a-b05f-092d0e91db4e"/>
+            <column name="amount" value="89.99"/>
+            <column name="status" value="PROCESSING"/>
+            <column name="payment_method" value="CASH"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="eecde4a5-19ad-4c1f-bb4b-213d78b2609b"/>
+            <column name="amount" value="250"/>
+            <column name="status" value="DONE"/>
+            <column name="payment_method" value="PAYPAL"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="2e93aa7c-66a8-436a-a9e7-03ab6d1b6805"/>
+            <column name="amount" value="45.75"/>
+            <column name="status" value="NEW"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="ee8e598e-93a1-44ff-b543-efa61d7c680f"/>
+            <column name="amount" value="199.99"/>
+            <column name="status" value="PROCESSING"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="67da6e0e-6e6b-4774-851d-35093e56c26f"/>
+            <column name="amount" value="320"/>
+            <column name="status" value="DONE"/>
+            <column name="payment_method" value="PAYPAL"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="29567719-d315-497a-b05f-092d0e91db4e"/>
+            <column name="amount" value="67.5"/>
+            <column name="status" value="CANCELED"/>
+            <column name="payment_method" value="CASH"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="eecde4a5-19ad-4c1f-bb4b-213d78b2609b"/>
+            <column name="amount" value="445.99"/>
+            <column name="status" value="NEW"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="2e93aa7c-66a8-436a-a9e7-03ab6d1b6805"/>
+            <column name="amount" value="78.25"/>
+            <column name="status" value="PROCESSING"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="ee8e598e-93a1-44ff-b543-efa61d7c680f"/>
+            <column name="amount" value="156.8"/>
+            <column name="status" value="DONE"/>
+            <column name="payment_method" value="PAYPAL"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="67da6e0e-6e6b-4774-851d-35093e56c26f"/>
+            <column name="amount" value="92"/>
+            <column name="status" value="NEW"/>
+            <column name="payment_method" value="CASH"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="29567719-d315-497a-b05f-092d0e91db4e"/>
+            <column name="amount" value="340.5"/>
+            <column name="status" value="PROCESSING"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="eecde4a5-19ad-4c1f-bb4b-213d78b2609b"/>
+            <column name="amount" value="125.99"/>
+            <column name="status" value="DONE"/>
+            <column name="payment_method" value="PAYPAL"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="2e93aa7c-66a8-436a-a9e7-03ab6d1b6805"/>
+            <column name="amount" value="520"/>
+            <column name="status" value="NEW"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="ee8e598e-93a1-44ff-b543-efa61d7c680f"/>
+            <column name="amount" value="87.45"/>
+            <column name="status" value="CANCELED"/>
+            <column name="payment_method" value="CASH"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="67da6e0e-6e6b-4774-851d-35093e56c26f"/>
+            <column name="amount" value="275.3"/>
+            <column name="status" value="PROCESSING"/>
+            <column name="payment_method" value="PAYPAL"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="29567719-d315-497a-b05f-092d0e91db4e"/>
+            <column name="amount" value="99.99"/>
+            <column name="status" value="DONE"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="eecde4a5-19ad-4c1f-bb4b-213d78b2609b"/>
+            <column name="amount" value="450"/>
+            <column name="status" value="NEW"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="2e93aa7c-66a8-436a-a9e7-03ab6d1b6805"/>
+            <column name="amount" value="63.8"/>
+            <column name="status" value="PROCESSING"/>
+            <column name="payment_method" value="CASH"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="ee8e598e-93a1-44ff-b543-efa61d7c680f"/>
+            <column name="amount" value="189.5"/>
+            <column name="status" value="DONE"/>
+            <column name="payment_method" value="PAYPAL"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="67da6e0e-6e6b-4774-851d-35093e56c26f"/>
+            <column name="amount" value="310"/>
+            <column name="status" value="NEW"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="29567719-d315-497a-b05f-092d0e91db4e"/>
+            <column name="amount" value="145.75"/>
+            <column name="status" value="CANCELED"/>
+            <column name="payment_method" value="CASH"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="eecde4a5-19ad-4c1f-bb4b-213d78b2609b"/>
+            <column name="amount" value="225.99"/>
+            <column name="status" value="PROCESSING"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="2e93aa7c-66a8-436a-a9e7-03ab6d1b6805"/>
+            <column name="amount" value="399"/>
+            <column name="status" value="DONE"/>
+            <column name="payment_method" value="PAYPAL"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="ee8e598e-93a1-44ff-b543-efa61d7c680f"/>
+            <column name="amount" value="56.5"/>
+            <column name="status" value="NEW"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="67da6e0e-6e6b-4774-851d-35093e56c26f"/>
+            <column name="amount" value="670"/>
+            <column name="status" value="PROCESSING"/>
+            <column name="payment_method" value="PAYPAL"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="29567719-d315-497a-b05f-092d0e91db4e"/>
+            <column name="amount" value="112.3"/>
+            <column name="status" value="DONE"/>
+            <column name="payment_method" value="CASH"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="eecde4a5-19ad-4c1f-bb4b-213d78b2609b"/>
+            <column name="amount" value="88.88"/>
+            <column name="status" value="NEW"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="2e93aa7c-66a8-436a-a9e7-03ab6d1b6805"/>
+            <column name="amount" value="234.56"/>
+            <column name="status" value="PROCESSING"/>
+            <column name="payment_method" value="CARD"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="customer_id" value="ee8e598e-93a1-44ff-b543-efa61d7c680f"/>
+            <column name="amount" value="555"/>
+            <column name="status" value="DONE"/>
+            <column name="payment_method" value="PAYPAL"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

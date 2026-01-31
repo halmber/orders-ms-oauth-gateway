@@ -69,6 +69,10 @@ management:
       exposure:
         include: health,info
 
+frontend:
+  url:
+    ${FRONTEND_URL}
+
 oauth:
   google:
     clientId: ${OAUTH_GOOGLE_CLIENT_ID}

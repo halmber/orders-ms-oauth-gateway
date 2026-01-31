@@ -39,7 +39,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     private final SessionService sessionService;
 
-    @Value("${frontend.url}")
+    @Value("${frontend.url}/oauth-callback")
     private String redirectUrl;
 
     @Override

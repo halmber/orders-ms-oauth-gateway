@@ -70,7 +70,6 @@ public class OrderController {
             }
     )
     @GetMapping
-    @CrossOrigin("http://localhost:3000")
     public OrderListResponseDto getPageableList(
             @Parameter(description = "Pagination and sorting parameters. Recommended to be used in query (designed for that) or write status in string type.")
             @PageableConstraints(whitelist = {"status", "paymentMethod", "amount"})
