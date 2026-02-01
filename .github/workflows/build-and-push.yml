@@ -1,0 +1,253 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'orders-api-service/**'
+      - 'email-sender-service/**'
+      - 'orders-api-gateway/**'
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Service to build (orders-api-service, email-sender-service, gateway, all)'
+        required: true
+        default: 'all'
+      skip_deploy:
+        description: 'Skip deployment trigger'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  REGISTRY: ghcr.io
+  DEPLOY_REPO: ${{ github.repository_owner }}/orders-api-deployment
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      orders-api-service: ${{ steps.changes.outputs.orders-api-service }}
+      email-sender-service: ${{ steps.changes.outputs.email-sender-service }}
+      gateway: ${{ steps.changes.outputs.gateway }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed services
+        id: changes
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            case "${{ github.event.inputs.service }}" in
+              all)
+                echo "orders-api-service=true" >> $GITHUB_OUTPUT
+                echo "email-sender-service=true" >> $GITHUB_OUTPUT
+                echo "gateway=true" >> $GITHUB_OUTPUT
+                ;;
+              orders-api-service) echo "orders-api-service=true" >> $GITHUB_OUTPUT ;;
+              email-sender-service) echo "email-sender-service=true" >> $GITHUB_OUTPUT ;;
+              gateway) echo "gateway=true" >> $GITHUB_OUTPUT ;;
+            esac
+          else
+            git diff --name-only HEAD~1 HEAD > changed_files.txt || echo "" > changed_files.txt
+            grep -q "orders-api-service" changed_files.txt && echo "orders-api-service=true" >> $GITHUB_OUTPUT || true
+            grep -q "email-sender-service" changed_files.txt && echo "email-sender-service=true" >> $GITHUB_OUTPUT || true
+            grep -q "orders-api-gateway" changed_files.txt && echo "gateway=true" >> $GITHUB_OUTPUT || true
+          fi
+
+  build-orders-api-service:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.orders-api-service == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Run tests
+        run: |
+          cd orders-api-service
+          mvn test
+
+      - name: Build with Maven
+        run: |
+          cd orders-api-service
+          mvn clean package -DskipTests
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set image prefix lowercase
+        id: prefix
+        run: echo "value=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./orders-api-service
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ steps.prefix.outputs.value }}/orders-api-service:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ steps.prefix.outputs.value }}/orders-api-service:latest
+
+  build-email-sender-service:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.email-sender-service == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Run tests
+        run: |
+          cd email-sender-service
+          mvn test
+
+      - name: Build with Maven
+        run: |
+          cd email-sender-service
+          mvn clean package -DskipTests
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set image prefix lowercase
+        id: prefix
+        run: echo "value=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./email-sender-service
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ steps.prefix.outputs.value }}/email-sender-service:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ steps.prefix.outputs.value }}/email-sender-service:latest
+
+  build-gateway:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.gateway == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: |
+          cd orders-api-gateway
+          mvn clean package -DskipTests
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set image prefix lowercase
+        id: prefix
+        run: echo "value=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./orders-api-gateway
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ steps.prefix.outputs.value }}/orders-api-gateway:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ steps.prefix.outputs.value }}/orders-api-gateway:latest
+
+  trigger-deploy:
+    needs: [detect-changes, build-orders-api-service, build-email-sender-service, build-gateway]
+    if: |
+      always() &&
+      (needs.build-orders-api-service.result == 'success' || 
+       needs.build-email-sender-service.result == 'success' || 
+       needs.build-gateway.result == 'success') &&
+      github.event.inputs.skip_deploy != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine built services
+        id: services
+        run: |
+          SERVICES=""
+          if [ "${{ needs.detect-changes.outputs.orders-api-service }}" == "true" ] && [ "${{ needs.build-orders-api-service.result }}" == "success" ]; then
+            SERVICES="orders-api-service"
+          fi
+          if [ "${{ needs.detect-changes.outputs.email-sender-service }}" == "true" ] && [ "${{ needs.build-email-sender-service.result }}" == "success" ]; then
+            [ -n "$SERVICES" ] && SERVICES="$SERVICES," || true
+            SERVICES="${SERVICES}email-sender-service"
+          fi
+          if [ "${{ needs.detect-changes.outputs.gateway }}" == "true" ] && [ "${{ needs.build-gateway.result }}" == "success" ]; then
+            [ -n "$SERVICES" ] && SERVICES="$SERVICES," || true
+            SERVICES="${SERVICES}gateway"
+          fi
+          echo "services=$SERVICES" >> $GITHUB_OUTPUT
+          echo "Built services: $SERVICES"
+
+      - name: Trigger deployment
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DEPLOY_REPO_TOKEN }}
+          repository: ${{ env.DEPLOY_REPO }}
+          event-type: deploy
+          client-payload: |
+            {
+              "services": "${{ steps.services.outputs.services }}",
+              "tag": "latest",
+              "source_repo": "${{ github.repository }}",
+              "commit_message": "${{ github.event.head_commit.message }}"
+            }

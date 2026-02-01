@@ -174,7 +174,7 @@ services:
       OAUTH_GOOGLE_CLIENT_ID: ${OAUTH_GOOGLE_CLIENT_ID}
       OAUTH_GOOGLE_CLIENT_SECRET: ${OAUTH_GOOGLE_CLIENT_SECRET}
       OAUTH_GOOGLE_SCOPE: ${OAUTH_GOOGLE_SCOPE:-openid email profile}
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      FRONTEND_URL: ${FRONTEND_URL:-}
 
 volumes:
   postgres_data:
