@@ -11,7 +11,7 @@ import java.lang.annotation.*;
  * Can be applied to a method parameter of type {@link Pageable}.
  * Ensures that page and size are positive integers, and optionally
  * restricts sorting fields according to whitelist or blacklist rules.
- * </p>
+ *  </p>
  *
  * <p><b>Example usage:</b></p>
  * <pre>{@code
